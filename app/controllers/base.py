@@ -15,6 +15,7 @@ class BaseController:
 
     @classmethod
     def get_all(cls) -> Tuple[Any, Optional[str]]:
+        print(cls.manager.get_all())
         try:
             return cls.manager.get_all(), None
         except (SQLAlchemyError, RuntimeError) as ex:
