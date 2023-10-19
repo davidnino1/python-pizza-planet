@@ -33,6 +33,7 @@ def get_ingredient_by_id(_id: int):
 @ingredient.route('/', methods=GET)
 def get_ingredients():
     ingredients, error = IngredientController.get_all()
+    print(ingredients)
     response = ingredients if not error else {'error': error}
     status_code = 200 if ingredients else 404 if not error else 400
     return jsonify(response), status_code
