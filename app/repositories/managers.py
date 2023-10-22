@@ -1,6 +1,7 @@
 from typing import Any, List, Optional, Sequence
 
-from sqlalchemy.sql import text, column
+from sqlalchemy.sql import text, column, func, desc
+import calendar
 
 from .models import Beverage, Ingredient, Order, OrderDetail, Size, db
 from .serializers import (BeverageSerializer, IngredientSerializer,
@@ -89,3 +90,60 @@ class IndexManager(BaseManager):
     @classmethod
     def test_connection(cls):
         cls.session.query(column('1')).from_statement(text('SELECT 1')).all()
+
+
+class ReportManager(BaseManager):
+
+    @classmethod
+    def get_top_ingredient(cls):
+        top_ingredient_response = (cls.session.query(Ingredient.name,
+            func.count(OrderDetail.ingredient_id).label('qty')
+            ).join(OrderDetail
+            ).group_by(Ingredient.name
+            ).order_by(desc('qty'))
+        ).all()
+
+        top_ingredient = {}
+
+        if top_ingredient_response:
+            top_ingredient = {
+                'name': top_ingredient_response[0][0],
+                'count': top_ingredient_response[0][1]
+            }
+        return top_ingredient
+
+    @classmethod
+    def get_top_month(cls):
+        top_month_response = (
+            cls.session.query(
+                func.strftime("%m", Order.date).label("month"), func.sum(Order.total_price).label("revenue")
+            ).group_by(func.strftime("%m", Order.date)
+            ).order_by(func.sum(Order.total_price).desc())
+        ).all()
+
+        top_month = {}
+
+        if top_month_response:
+            top_month = {
+                'name': calendar.month_name[int(top_month_response[0][0])],
+                'total': top_month_response[0][1]
+            }
+        return top_month
+    
+    @classmethod
+    def get_top_customers(cls):
+        top_customers_response = (cls.session.query(Order.client_name,
+            func.count(Order._id).label('qty')
+            ).group_by(Order.client_name
+            ).order_by(desc('qty')).limit(3)
+        ).all()
+
+        top_customers = {}
+
+        if top_customers_response:
+            top_customers = [{
+                'name': customer[0],
+                'count': customer[1]
+            } for customer in top_customers_response]
+
+        return top_customers
