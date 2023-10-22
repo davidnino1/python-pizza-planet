@@ -3,12 +3,14 @@ from typing import Any, List, Optional, Sequence
 from sqlalchemy.sql import text, column, func, desc
 import calendar
 
+from app.common.singleton import Singleton
+
 from .models import Beverage, Ingredient, Order, OrderDetail, Size, db
 from .serializers import (BeverageSerializer, IngredientSerializer,
                           OrderSerializer, SizeSerializer, ma)
 
 
-class BaseManager:
+class BaseManager(metaclass=Singleton):
     model: Optional[db.Model] = None
     serializer: Optional[ma.SQLAlchemyAutoSchema] = None
     session = db.session
@@ -40,12 +42,12 @@ class BaseManager:
         return cls.get_by_id(_id)
 
 
-class SizeManager(BaseManager):
+class SizeManager(BaseManager, metaclass=Singleton):
     model = Size
     serializer = SizeSerializer
 
 
-class IngredientManager(BaseManager):
+class IngredientManager(BaseManager, metaclass=Singleton):
     model = Ingredient
     serializer = IngredientSerializer
 
@@ -54,7 +56,7 @@ class IngredientManager(BaseManager):
         return cls.session.query(cls.model).filter(cls.model._id.in_(set(ids))).all() or []
     
 
-class BeverageManager(BaseManager):
+class BeverageManager(BaseManager, metaclass=Singleton):
     model = Beverage
     serializer = BeverageSerializer
 
@@ -63,7 +65,7 @@ class BeverageManager(BaseManager):
         return cls.session.query(cls.model).filter(cls.model._id.in_(set(ids))).all() or []
 
 
-class OrderManager(BaseManager):
+class OrderManager(BaseManager, metaclass=Singleton):
     model = Order
     serializer = OrderSerializer
 
@@ -85,14 +87,14 @@ class OrderManager(BaseManager):
         raise NotImplementedError(f'Method not suported for {cls.__name__}')
 
 
-class IndexManager(BaseManager):
+class IndexManager(BaseManager, metaclass=Singleton):
 
     @classmethod
     def test_connection(cls):
         cls.session.query(column('1')).from_statement(text('SELECT 1')).all()
 
 
-class ReportManager(BaseManager):
+class ReportManager(BaseManager, metaclass=Singleton):
 
     @classmethod
     def get_top_ingredient(cls):

@@ -1,12 +1,14 @@
 from sqlalchemy.exc import SQLAlchemyError
 
+from app.common.singleton import Singleton
+
 from ..common.utils import check_required_keys
 from ..repositories.managers import (BeverageManager, IngredientManager, OrderManager,
                                      SizeManager)
 from .base import BaseController
 
 
-class OrderController(BaseController):
+class OrderController(BaseController, metaclass=Singleton):
     manager = OrderManager
     __required_info = ('client_name', 'client_dni', 'client_address', 'client_phone', 'size_id')
 

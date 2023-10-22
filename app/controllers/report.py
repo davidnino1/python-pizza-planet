@@ -1,8 +1,9 @@
+from app.common.singleton import Singleton
 from ..repositories.managers import ReportManager
 from .base import BaseController
 
 
-class ReportController(BaseController):
+class ReportController(BaseController, metaclass=Singleton):
     manager = ReportManager
 
     @classmethod
