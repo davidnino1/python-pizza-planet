@@ -1,11 +1,10 @@
 from typing import Any, Optional, Tuple
 from sqlalchemy.exc import SQLAlchemyError
 
-from app.common.singleton import Singleton
 from ..repositories.managers import BaseManager
 
 
-class BaseController(metaclass=Singleton):
+class BaseController():
     manager: Optional[BaseManager] = None
 
     @classmethod

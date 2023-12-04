@@ -3,15 +3,13 @@ from typing import Any, List, Optional, Sequence
 from sqlalchemy.sql import text, column, func, desc
 import calendar
 
-from app.common.singleton import Singleton
-
 from .models import Beverage, Ingredient, Order, OrderDetail, Size, db
 from .serializers import (BeverageSerializer, IngredientSerializer,
                           OrderSerializer, SizeSerializer, ma)
 
 TOP_CUSTOMERS = 3
 
-class BaseManager(metaclass=Singleton):
+class BaseManager():
     model: Optional[db.Model] = None
     serializer: Optional[ma.SQLAlchemyAutoSchema] = None
     session = db.session
@@ -43,12 +41,12 @@ class BaseManager(metaclass=Singleton):
         return cls.get_by_id(_id)
 
 
-class SizeManager(BaseManager, metaclass=Singleton):
+class SizeManager(BaseManager):
     model = Size
     serializer = SizeSerializer
 
 
-class IngredientManager(BaseManager, metaclass=Singleton):
+class IngredientManager(BaseManager):
     model = Ingredient
     serializer = IngredientSerializer
 
@@ -57,7 +55,7 @@ class IngredientManager(BaseManager, metaclass=Singleton):
         return cls.session.query(cls.model).filter(cls.model._id.in_(set(ids))).all() or []
     
 
-class BeverageManager(BaseManager, metaclass=Singleton):
+class BeverageManager(BaseManager):
     model = Beverage
     serializer = BeverageSerializer
 
@@ -66,7 +64,7 @@ class BeverageManager(BaseManager, metaclass=Singleton):
         return cls.session.query(cls.model).filter(cls.model._id.in_(set(ids))).all() or []
 
 
-class OrderManager(BaseManager, metaclass=Singleton):
+class OrderManager(BaseManager):
     model = Order
     serializer = OrderSerializer
 
@@ -88,14 +86,14 @@ class OrderManager(BaseManager, metaclass=Singleton):
         raise NotImplementedError(f'Method not suported for {cls.__name__}')
 
 
-class IndexManager(BaseManager, metaclass=Singleton):
+class IndexManager(BaseManager):
 
     @classmethod
     def test_connection(cls):
         cls.session.query(column('1')).from_statement(text('SELECT 1')).all()
 
 
-class ReportManager(BaseManager, metaclass=Singleton):
+class ReportManager(BaseManager):
 
     @classmethod
     def get_top_ingredient(cls):
