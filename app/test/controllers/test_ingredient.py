@@ -2,7 +2,7 @@ import pytest
 from app.controllers import IngredientController
 
 
-def test_create(app, ingredient: dict):
+def test_create_ingredient_returns_created_service_when_created_correctly(app, ingredient: dict):
     created_ingredient, error = IngredientController.create(ingredient)
     pytest.assume(error is None)
     for param, value in ingredient.items():
@@ -11,7 +11,7 @@ def test_create(app, ingredient: dict):
         pytest.assume(created_ingredient['_id'])
 
 
-def test_update(app, ingredient: dict):
+def test_update_ingredient_returns_updated_service_when_exists_in_database(app, ingredient: dict):
     created_ingredient, _ = IngredientController.create(ingredient)
     updated_fields = {
         'name': 'updated',
@@ -29,7 +29,7 @@ def test_update(app, ingredient: dict):
         pytest.assume(ingredient_from_database[param] == value)
 
 
-def test_get_by_id(app, ingredient: dict):
+def test_get_ingredient_by_id_returns_ingredient_when_exists_in_database(app, ingredient: dict):
     created_ingredient, _ = IngredientController.create(ingredient)
     ingredient_from_db, error = IngredientController.get_by_id(created_ingredient['_id'])
     pytest.assume(error is None)
@@ -37,7 +37,7 @@ def test_get_by_id(app, ingredient: dict):
         pytest.assume(ingredient_from_db[param] == value)
 
 
-def test_get_all(app, ingredients: list):
+def test_get_all_ingredients_when_one_or_more_exist_in_database(app, ingredients: list):
     created_ingredients = []
     for ingredient in ingredients:
         created_ingredient, _ = IngredientController.create(ingredient)
