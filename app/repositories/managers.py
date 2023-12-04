@@ -9,6 +9,7 @@ from .models import Beverage, Ingredient, Order, OrderDetail, Size, db
 from .serializers import (BeverageSerializer, IngredientSerializer,
                           OrderSerializer, SizeSerializer, ma)
 
+TOP_CUSTOMERS = 3
 
 class BaseManager(metaclass=Singleton):
     model: Optional[db.Model] = None
@@ -137,7 +138,7 @@ class ReportManager(BaseManager, metaclass=Singleton):
         top_customers_response = (cls.session.query(Order.client_name,
             func.count(Order._id).label('qty')
             ).group_by(Order.client_name
-            ).order_by(desc('qty')).limit(3)
+            ).order_by(desc('qty')).limit(TOP_CUSTOMERS)
         ).all()
 
         top_customers = {}
