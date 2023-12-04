@@ -14,7 +14,7 @@ def client_data_mock() -> dict:
 
 
 @pytest.fixture
-def order_uri():
+def order_url():
     return '/order/'
 
 
@@ -37,7 +37,7 @@ def order(create_ingredients, create_beverages, create_size, client_data) -> dic
 
 
 @pytest.fixture
-def create_order(create_ingredients, create_beverages, create_size, client_data, client, order_uri) -> dict:
+def create_order(create_ingredients, create_beverages, create_size, client_data, client, order_url) -> dict:
     ingredients = [ingredient.get('_id') for ingredient in create_ingredients]
     beverages = [beverage.get('_id') for beverage in create_beverages]
     size_id = create_size.json.get('_id')
@@ -47,18 +47,18 @@ def create_order(create_ingredients, create_beverages, create_size, client_data,
         'beverages': beverages,
         'size_id': size_id
     }
-    response = client.post(order_uri, json=payload)
+    response = client.post(order_url, json=payload)
     return response
 
 
 @pytest.fixture
-def create_orders(client, order_uri, create_ingredients, create_beverages, create_sizes) -> list:
+def create_orders(client, order_url, create_ingredients, create_beverages, create_sizes) -> list:
     ingredients = [ingredient.get('_id') for ingredient in create_ingredients]
     beverages = [beverage.get('_id') for beverage in create_beverages]
     sizes = [size.get('_id') for size in create_sizes]
     orders = []
     for _ in range(10):
-        new_order = client.post(order_uri, json={
+        new_order = client.post(order_url, json={
             **client_data_mock(),
             'ingredients': shuffle_list(ingredients)[:5],
             'beverages': shuffle_list(beverages)[:5],
