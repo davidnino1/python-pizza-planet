@@ -20,7 +20,7 @@ def app():
     db_fd, dbpath = tempfile.mkstemp()
 
     class Config:
-        SQLALCHEMY_DATABASE_URI = 'sqlite:///{}'.format(dbpath)
+        SQLALCHEMY_DATABASE_URL = 'sqlite:///{}'.format(dbpath)
         TESTING = True
         SQLALCHEMY_TRACK_MODIFICATIONS = False
 

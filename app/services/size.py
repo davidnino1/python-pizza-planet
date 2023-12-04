@@ -10,19 +10,19 @@ service = BaseService(SizeController)
 
 
 @size.route('/', methods=POST)
-def create_size():
+def create_pizza_size():
     return service.create()
 
 
 @size.route('/', methods=PUT)
-def update_size():
+def update_pizza_size():
     return service.update()
 
 
 @size.route('/id/<_id>', methods=GET)
-def get_size_by_id(_id: int):
+def get_pizza_size_by_id(_id: int):
     return service.get_by_id(_id)
 
 @size.route('/', methods=GET)
-def get_sizes():
+def get_pizza_sizes():
     return service.get_all()
