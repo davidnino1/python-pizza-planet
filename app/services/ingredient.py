@@ -1,28 +1,31 @@
 from app.common.http_methods import GET, POST, PUT
 from flask import Blueprint, jsonify, request
 
-from app.services.base import BaseService
+from app.services.base import base_service
 
 from ..controllers import IngredientController
 
 ingredient = Blueprint('ingredient', __name__)
-service = BaseService(IngredientController)
 
 @ingredient.route('/', methods=POST)
+@base_service
 def create_ingredient():
-    return service.create()
+    return IngredientController.create(request.json)
 
 
 @ingredient.route('/', methods=PUT)
+@base_service
 def update_ingredient():
-    return service.update()
+    return IngredientController.update(request.json)
 
 
 @ingredient.route('/id/<_id>', methods=GET)
+@base_service
 def get_ingredient_by_id(_id: int):
-    return service.get_by_id(_id)
+    return IngredientController.get_by_id(_id)
 
 
 @ingredient.route('/', methods=GET)
+@base_service
 def get_ingredients():
-    return service.get_all()
+    return IngredientController.get_all()
